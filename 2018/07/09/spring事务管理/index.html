@@ -191,7 +191,7 @@
 </li>
 </ul>
 <p>测试类</p>
-<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.sysker.spring.dome.test;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.<span class="keyword">annotation</span>.Resource;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.log4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.junit.runner.RunWith;</span><br><span class="line"><span class="keyword">import</span> org.springframework.test.context.ContextConfiguration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.test.context.junit4.SpringJUnit4ClassRunner;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.sysker.spring.dome.service.AccountService;</span><br><span class="line"></span><br><span class="line"><span class="meta">@RunWith(SpringJUnit4ClassRunner.class)</span></span><br><span class="line"><span class="meta">@ContextConfiguration(locations = &#123;<span class="meta-string">"classpath:spring-mybatis.xml"</span>&#125;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestMybatis</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> static Logger logger = Logger.getLogger(TestMybatis.<span class="keyword">class</span>);</span><br><span class="line">    <span class="meta">@Resource(name=<span class="meta-string">"accountServiceProxy"</span>)</span></span><br><span class="line">    <span class="keyword">private</span> AccountService accountService;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> void test1() &#123;</span><br><span class="line">        accountService.transfer(<span class="string">"aaa"</span>, <span class="string">"bbb"</span>, <span class="string">"200"</span>);</span><br><span class="line">        logger.info(<span class="string">"success"</span>);</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">``` </span><br><span class="line"></span><br><span class="line">service实现，包含了事务管理</span><br></pre></td></tr></table></figure>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.sysker.spring.dome.test;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.<span class="keyword">annotation</span>.Resource;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.log4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.junit.runner.RunWith;</span><br><span class="line"><span class="keyword">import</span> org.springframework.test.context.ContextConfiguration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.test.context.junit4.SpringJUnit4ClassRunner;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.sysker.spring.dome.service.AccountService;</span><br><span class="line"></span><br><span class="line"><span class="meta">@RunWith(SpringJUnit4ClassRunner.class)</span></span><br><span class="line"><span class="meta">@ContextConfiguration(locations = &#123;<span class="meta-string">"classpath:spring-mybatis.xml"</span>&#125;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestMybatis</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> static Logger logger = Logger.getLogger(TestMybatis.<span class="keyword">class</span>);</span><br><span class="line">    <span class="meta">@Resource(name=<span class="meta-string">"accountServiceProxy"</span>)</span></span><br><span class="line">    <span class="keyword">private</span> AccountService accountService;    </span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> void test1() &#123;</span><br><span class="line">        accountService.transfer(<span class="string">"aaa"</span>, <span class="string">"bbb"</span>, <span class="string">"200"</span>);</span><br><span class="line">        logger.info(<span class="string">"success"</span>);        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line">``` </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- service实现，包含了事务管理</span><br></pre></td></tr></table></figure>
 <p>package com.sysker.spring.dome.service.impl;</p>
 <p>import org.springframework.beans.factory.annotation.Autowired;<br>import org.springframework.stereotype.Service;<br>import org.springframework.transaction.TransactionStatus;<br>import org.springframework.transaction.support.TransactionCallbackWithoutResult;<br>import org.springframework.transaction.support.TransactionTemplate;</p>
 <p>import com.sysker.spring.dome.dao.AccountDao;<br>import com.sysker.spring.dome.service.AccountService;</p>
@@ -207,8 +207,7 @@ public void transfer(String out, String in, String money) {
             accountDao.inMoney(in, money);
 
 }
-</code></pre><p>}</p>
-<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="bullet">-  </span>基于AOP的事务管理（实际开发会经常用到）</span><br></pre></td></tr></table></figure>
+</code></pre><p>}<br><figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="bullet">-  </span>基于AOP的事务管理（实际开发会经常用到）</span><br></pre></td></tr></table></figure></p>
 <!-- (事务管理)transaction manager, use JtaTransactionManager for global tx -->
 <pre><code>&lt;bean id=&quot;transactionManager&quot;
     class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;
@@ -239,14 +238,13 @@ public void transfer(String out, String in, String money) {
     &lt;aop:advisor advice-ref=&quot;txAdvice&quot;
         pointcut-ref=&quot;fooServiceOperation&quot; /&gt;
 &lt;/aop:config&gt;
-</code></pre><figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">service</span>实现，包含了事务管理</span></span><br></pre></td></tr></table></figure>
+</code></pre><figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="bullet">- </span>service实现，包含了事务管理</span><br></pre></td></tr></table></figure>
 <p>package com.sysker.spring.dome.service.impl;</p>
 <p>import org.springframework.beans.factory.annotation.Autowired;<br>import org.springframework.stereotype.Service;<br>import org.springframework.transaction.TransactionStatus;<br>import org.springframework.transaction.support.TransactionCallbackWithoutResult;<br>import org.springframework.transaction.support.TransactionTemplate;</p>
 <p>import com.sysker.spring.dome.dao.AccountDao;<br>import com.sysker.spring.dome.service.AccountService;</p>
 <p>@Service<br>public class AccountServiceImpl implements AccountService {</p>
 <pre><code>@Autowired
-private AccountDao accountDao;
-
+private AccountDao accountDao;   
 
 @Override
 public void transfer(String out, String in, String money) {
@@ -254,11 +252,9 @@ public void transfer(String out, String in, String money) {
             int i = 1/0;
             accountDao.inMoney(in, money);
 
-
-
 }
 </code></pre><p>}</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">测试类</span><br></pre></td></tr></table></figure>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="bullet">- </span>测试类</span><br></pre></td></tr></table></figure>
 <p>package com.sysker.spring.dome.test;</p>
 <p>import javax.annotation.Resource;</p>
 <p>import org.apache.log4j.Logger;<br>import org.junit.Test;<br>import org.junit.runner.RunWith;<br>import org.springframework.test.context.ContextConfiguration;<br>import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;</p>
@@ -270,8 +266,7 @@ public void test1() {
     logger.info(&quot;success&quot;);
 
 }
-</code></pre><p>}</p>
-<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="bullet">- </span>基于注解的事务管理 （实际开发会经常用到）</span><br></pre></td></tr></table></figure>
+</code></pre><p>}<br><figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="bullet">- </span>基于注解的事务管理 （实际开发会经常用到）</span><br></pre></td></tr></table></figure></p>
 <!-- 配置事务管理器 -->
 <!-- (事务管理)transaction manager, use JtaTransactionManager for global tx -->
 <pre><code>&lt;bean id=&quot;transactionManager&quot;
@@ -279,9 +274,9 @@ public void test1() {
     &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot; /&gt;
 &lt;/bean&gt;
 
-!-- 基于注解的事务管理 --&gt;
+&lt;!-- 基于注解的事务管理 --&gt;
 &lt;tx:annotation-driven transaction-manager=&quot;transactionManager&quot; /&gt;
-</code></pre><figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">service</span>实现，包含了事务管理</span></span><br></pre></td></tr></table></figure>
+</code></pre><figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="bullet">- </span>service实现，包含了事务管理</span><br></pre></td></tr></table></figure>
 <p>package com.sysker.spring.dome.service.impl;</p>
 <p>import org.springframework.beans.factory.annotation.Autowired;<br>import org.springframework.stereotype.Service;<br>import org.springframework.transaction.TransactionStatus;<br>import org.springframework.transaction.support.TransactionCallbackWithoutResult;<br>import org.springframework.transaction.support.TransactionTemplate;</p>
 <p>import com.sysker.spring.dome.dao.AccountDao;<br>import com.sysker.spring.dome.service.AccountService;</p>
@@ -296,11 +291,9 @@ public void transfer(String out, String in, String money) {
             int i = 1/0;
             accountDao.inMoney(in, money);
 
-
-
-}
+ }
 </code></pre><p>}</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">测试类</span><br></pre></td></tr></table></figure>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="bullet">- </span>测试类</span><br></pre></td></tr></table></figure>
 <p>package com.sysker.spring.dome.test;</p>
 <p>import javax.annotation.Resource;</p>
 <p>import org.apache.log4j.Logger;<br>import org.junit.Test;<br>import org.junit.runner.RunWith;<br>import org.springframework.test.context.ContextConfiguration;<br>import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;</p>

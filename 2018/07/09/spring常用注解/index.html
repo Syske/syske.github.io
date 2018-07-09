@@ -1,0 +1,71 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>spring常用注解 | 云中志</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/8.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">spring常用注解</h1><a id="logo" href="/.">云中志</a><p class="description"></p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">spring常用注解</h1><div class="post-meta">Jul 9, 2018<span> | </span><span class="category"><a href="/categories/java-web/">java web</a></span></div><div class="post-content"><h4 id="1、-Aspect"><a href="#1、-Aspect" class="headerlink" title="1、@Aspect"></a>1、@Aspect</h4><ul>
+<li>配置切面Bean，和&lt;bean…/&gt;元素进行配置无区别，一样支持依赖注入来配置属性值；</li>
+<li>如果启动了Spring的“零配置”特性，一样可以让Spring自动搜索，并加载指定路径下的切面Bean</li>
+<li>使用@Aspect修饰的类（切面类）和其他类一样可以有方法、成员变量定义，还可能包括切入点、增强处理定义</li>
+<li>使用@Aspect修饰类，Spring将不会把该Bean当成组件Bean处理，因此负责自动增强的后处理Bean将会略过该Bean，不会对该Bean进行任何增强处理</li>
+</ul>
+<h4 id="2、-Before"><a href="#2、-Before" class="headerlink" title="2、@Before"></a>2、@Before</h4><ul>
+<li>修饰一个方法时，该方法将作为Before增强处理</li>
+<li>使用@Before修饰时，需要指定一个value属性值，该属性值指定一个切入点表达式（既可以是一个已有的切入点，也可以直接定义切入点表达式），用于指定该增强处理将被织入哪些切入点</li>
+<li>表示在切入点执行前需要进行的操作或者需要执行的方法</li>
+</ul>
+<h4 id="3、-After"><a href="#3、-After" class="headerlink" title="3、@After"></a>3、@After</h4><ul>
+<li>同Before</li>
+<li>表示在切入点执行后，进行哪些操作</li>
+<li>通常用于资源释放</li>
+</ul>
+<h4 id="4、-AfterReturning"><a href="#4、-AfterReturning" class="headerlink" title="4、@AfterReturning"></a>4、@AfterReturning</h4><ul>
+<li>表示在切入点执行后，进行哪些操作</li>
+<li>使用@AfterReturning增强处理可指定如下常用属性</li>
+<li><ul>
+<li>pointcut/value:用于指定该切入点对应的切入表达式，当指定了pointcut属性值后，value属性值将会被覆盖</li>
+</ul>
+</li>
+<li><ul>
+<li>returning：该属性值指定一个形参名，用于表示Advuce方法中可以定义与此同名的形参，该形参可用于访问目标方法的返回值</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>在Advice方法中定义该形参时指定的类型，会限制目标方法必须返回指定类型的值或没有返回值</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>AfterReturning增强处理只有在目标方法成功完成后才会被织入</li>
+<li>After增强处理不管目标方法时如何结束的（成功或抛出异常），它都会被织入</li>
+</ul>
+<h4 id="5、-AfterThrowing"><a href="#5、-AfterThrowing" class="headerlink" title="5、@AfterThrowing"></a>5、@AfterThrowing</h4><ul>
+<li>同上</li>
+<li>使用@AfterThrowing注解时可指定如下两个常用属性：</li>
+<li><ul>
+<li>pointcut/value:用于指定该切入点对应的切入表达式，当指定了pointcut属性值后，value属性值将会被覆盖</li>
+</ul>
+</li>
+<li><ul>
+<li>throwing:该属性值指定一个形参名，用于表示Advice方法中可以定义与此同名的形参，该形参可用于访问目标方法抛出的异常</li>
+</ul>
+</li>
+<li><ul>
+<li>在Advice方法中定义该形参时指定的类型，会限制目标方法必须抛出指定类型的异常</li>
+</ul>
+</li>
+</ul>
+<h4 id="6、-Around"><a href="#6、-Around" class="headerlink" title="6、@Around"></a>6、@Around</h4><ul>
+<li>Around增强处理是功能比较强大的增强处理；</li>
+<li>近似等于Before增强处理和AfterReturning增强处理的总和</li>
+<li>既可以在执行目标方法之前织入增强动作，也可以在执行目标方法之后织入增强动作</li>
+<li>Around增强处理可以改变执行目标方法的参数值，也可以改变执行目标方法之后的返回值</li>
+<li>Around增强处理虽然功能强大，但通常需要在线程安全的环境下使用，所以一般用Before和AfterReturning增强处理能解决的问题，不建议用Around</li>
+<li>如果需要目标方法执行之前和之后共享某种状态数据，则应该考虑使用Around增强处理；尤其是需要改变目标方法的返回值时，则只能使用Around增强处理了</li>
+<li>@Around增强处理事，需要指定一个value属性，该属性指定该增强处理被植入的切入点</li>
+<li>当定义一个Around增强处理方法时，该方法的第一个形参必须是ProceedingJoinPoint类型（至少包含一个形参），在增强处理方法体内，调用ProceedingJoinPoint参数的proceed()方法才会执行目标方法——这就是Around增强处理可以完全控制目标方法的执行时机、如何执行的关键；如果程序没有调用ProceedingJoinPoint参数的proceed()方法，则目标方法不会被执行。</li>
+<li>调用ProceedingJoinPoint参数的proceed()方法时，还可以传入一个Object[]对象作为参数，该数组中的值将被传入目标方法作为执行方法的实参</li>
+</ul>
+<h4 id="7、切面织入顺序（优先级）"><a href="#7、切面织入顺序（优先级）" class="headerlink" title="7、切面织入顺序（优先级）"></a>7、切面织入顺序（优先级）</h4><h5 id="两种方式"><a href="#两种方式" class="headerlink" title="两种方式"></a>两种方式</h5><ul>
+<li><p>让切面实现 org.springframework.core.Ordered 接口，实现该接口只需要实现一个 int getOrder()方法，该方法的返回值越小，则优先级越高</p>
+</li>
+<li><p>直接使用@Order 注解来修饰一个切面类，可以指定一个 int 类型的value属性，该值越小，则优先级越高</p>
+</li>
+</ul>
+</div><div class="tags"><a href="/tags/spring/">spring</a></div><div class="post-nav"><a class="next" href="/2018/07/09/spring事务管理/">spring事务管理</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="http://yoursite.com"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/java-web/">java web</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/spring/" style="font-size: 15px;">spring</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/mybatis/" style="font-size: 15px;">mybatis</a> <a href="/tags/事务管理/" style="font-size: 15px;">事务管理</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/07/09/spring常用注解/">spring常用注解</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/09/spring事务管理/">spring事务管理</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/09/spring零配置AOP踩坑指南/">spring零配置AOP踩坑指南</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/09/mybatis、Spring整合（eclipse）以及事务管理/">mybatis、Spring整合（eclipse）以及事务管理</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://www.cnblogs.com/caoleiCoding/" title="我的博客园" target="_blank">我的博客园</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2018 <a href="/." rel="nofollow">云中志.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.3.5/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.3.5/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

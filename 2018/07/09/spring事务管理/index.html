@@ -1,0 +1,316 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>spring事务管理 | 云中志</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/8.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">spring事务管理</h1><a id="logo" href="/.">云中志</a><p class="description"></p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">spring事务管理</h1><div class="post-meta">Jul 9, 2018</div><div class="post-content"><h3 id="1、概念"><a href="#1、概念" class="headerlink" title="1、概念"></a>1、概念</h3><ul>
+<li><strong>事务：</strong> 逻辑上的一组操作，这组操作要么全部成功，要么全部失败。</li>
+<li><strong>特性：</strong> </li>
+<li><ul>
+<li>原子性：不可分割</li>
+</ul>
+</li>
+<li><ul>
+<li>统一性：数据完整性要一致</li>
+</ul>
+</li>
+<li><ul>
+<li>隔离线：线程安全（多个用户并发访问数据）</li>
+</ul>
+</li>
+<li><ul>
+<li>持久性：事务被提交后，数据的改变就是永久性的，及时数据库发生故障也不能对其有任何影响</li>
+</ul>
+</li>
+</ul>
+<h3 id="2、事务管理高层抽象接口"><a href="#2、事务管理高层抽象接口" class="headerlink" title="2、事务管理高层抽象接口"></a>2、事务管理高层抽象接口</h3><ul>
+<li><strong>PlatformTransaction:</strong>事务管理器</li>
+<li><ul>
+<li>spring为不同的持久化框架提供了不同的PlatformTtansactionManager接口实现：</li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>事务</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>org.springframework.jdbc.datasource.DataSourceTransactionManager</td>
+<td>使用Spring JDBC或mybatis进行持久化数据时使用</td>
+</tr>
+<tr>
+<td>org.springframework.orm.hibernate3.HibernateTransactionManager</td>
+<td>使用Hibernate3.0进行持久化数据时使用</td>
+</tr>
+<tr>
+<td>org.springframework.jpa.JpaTransactionManager</td>
+<td>使用JPA进行持久化时使用</td>
+</tr>
+<tr>
+<td>org.springframework.jdo.JdpTransactionManager</td>
+<td>当持久化机制是Jdo时使用</td>
+</tr>
+<tr>
+<td>org.springframework.transaction.jta.JtaTransactionManager</td>
+<td>使用一个JTA实现来管理事务，在一个事务跨越多个资源时必须使用</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>TransactionDefinition：</strong> 事务定义信息（隔离、传播、超时、只读）</li>
+<li><ul>
+<li>事务隔离级别：</li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>隔离级别</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DEFAULT</td>
+<td>使用后端数据库默认的隔离级别（Spring中的选择项）</td>
+</tr>
+<tr>
+<td>READ_UNCOMMITED</td>
+<td>允许 你读取还未提交的改变了的数据。可能导致脏、幻、不可重复读</td>
+</tr>
+<tr>
+<td>REPEATABLE_READ</td>
+<td>对相同的字段的多次读取是一致的，除非数据被事务本身改变。可防止脏、不可重复读，但幻读仍有可能发生</td>
+</tr>
+<tr>
+<td>SERIALIZABLE</td>
+<td>完全服从ACID的隔离级别，确保不发生脏、幻、不可重复读。这在所有隔离级别中是最慢的，它是典型的通过完全锁定在事务中涉及的数据表来完成的</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><ul>
+<li>脏读：一个事务读取了另一个事务该写的但还未提交的数据，如果这些数据被回滚，则读到的数据时无效的。</li>
+</ul>
+</li>
+<li><ul>
+<li>不可重复读：在同一事务中，多次读取同一数据返回的结果有所不同 </li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><ul>
+<li>幻读：一个事务读取了几行记录后，另一个事务插入一些记录，幻读就发生了，再后来的查询中，第一个事务就会发现有些原理没有的记录 </li>
+</ul>
+</li>
+<li><ul>
+<li>事务传播行为</li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>事务传播行为类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PROPAGATION_REQUIRED</td>
+<td>支持当前事务，如果不存在就新建一个</td>
+</tr>
+<tr>
+<td>PROPAGATION_SUPPORTS</td>
+<td>支持当前事务，如果不存在，就不使用事务</td>
+</tr>
+<tr>
+<td>PROPAGATION_MANDATORY</td>
+<td>支持当前事务，如果不存在，就抛出异常</td>
+</tr>
+<tr>
+<td>PROPAGATION_REQUIRES_NEW</td>
+<td>如果有事务存在，挂起当前事务，创建一个新的事务</td>
+</tr>
+<tr>
+<td>PROPAGATION_NOT_SUPPORTED</td>
+<td>以非事务方式运行，如果有事务存在，挂起当前事务</td>
+</tr>
+<tr>
+<td>PROPAGATION_NEVER</td>
+<td>以非事务方式运行，如果有事务存在，抛出异常</td>
+</tr>
+<tr>
+<td>PROPAGATION_NESTED</td>
+<td>如果当前事务存在，则嵌套事务执行</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>TransactionStatus:</strong> 事务具体运行状态</li>
+</ul>
+<h3 id="3、事务管理方式"><a href="#3、事务管理方式" class="headerlink" title="3、事务管理方式"></a>3、事务管理方式</h3><h3 id="3-1、编程式事务管理（很少用到）"><a href="#3-1、编程式事务管理（很少用到）" class="headerlink" title="3.1、编程式事务管理（很少用到）"></a>3.1、编程式事务管理（很少用到）</h3><ul>
+<li>在AccountService中使用TransactionTemplate</li>
+<li>TransactionTemplate依赖DataSourceTransactionManager</li>
+<li>DataSourceTransactionManager依赖DataSource构造</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- (事务管理)transaction manager, use JtaTransactionManager for global tx --&gt;  </span><br><span class="line">  &lt;bean id=&quot;transactionManager&quot;  </span><br><span class="line">      class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;  </span><br><span class="line">      &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot; /&gt;  </span><br><span class="line">  &lt;/bean&gt;  </span><br><span class="line">  </span><br><span class="line">  &lt;!-- 配置事务管理模板：Spring为了简化事务管理的代码而提供的类 --&gt;</span><br><span class="line">  &lt;bean id=&quot;transactionTemplate&quot; class=&quot;org.springframework.transaction.support.TransactionTemplate&quot;&gt;</span><br><span class="line">  	&lt;property name=&quot;transactionManager&quot; ref=&quot;transactionManager&quot;&gt;&lt;/property&gt;</span><br><span class="line">  &lt;/bean&gt;</span><br></pre></td></tr></table></figure>
+<p>service实现，包含了事务管理<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">package com.sysker.spring.dome.service.impl;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">import org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line">import org.springframework.stereotype.Service;</span><br><span class="line">import org.springframework.transaction.TransactionStatus;</span><br><span class="line">import org.springframework.transaction.support.TransactionCallbackWithoutResult;</span><br><span class="line">import org.springframework.transaction.support.TransactionTemplate;</span><br><span class="line"></span><br><span class="line">import com.sysker.spring.dome.dao.AccountDao;</span><br><span class="line">import com.sysker.spring.dome.service.AccountService;</span><br><span class="line"></span><br><span class="line">@Service</span><br><span class="line">public class AccountServiceImpl implements AccountService &#123;</span><br><span class="line">    </span><br><span class="line">    @Autowired</span><br><span class="line">    private AccountDao accountDao;</span><br><span class="line">    </span><br><span class="line">    @Autowired</span><br><span class="line">    private TransactionTemplate transactionTemplate;</span><br><span class="line">    </span><br><span class="line">    @Override</span><br><span class="line">    public void transfer(String out, String in, String money) &#123;</span><br><span class="line">        /**</span><br><span class="line">         * 事务管理，execute()方法中创建了一个匿名内部类，在匿名内部类中操作业务，即可实现事务管理</span><br><span class="line">         */</span><br><span class="line">        transactionTemplate.execute(new TransactionCallbackWithoutResult() &#123;</span><br><span class="line">            </span><br><span class="line">            @Override</span><br><span class="line">            protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) &#123;</span><br><span class="line">                accountDao.outMoney(out, money);</span><br><span class="line">                int i = 1/0;</span><br><span class="line">                accountDao.inMoney(in, money);</span><br><span class="line">                </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>测试类</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">package com.sysker.spring.dome.test;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">import javax.annotation.Resource;</span><br><span class="line"></span><br><span class="line">import org.apache.log4j.Logger;</span><br><span class="line">import org.junit.Test;</span><br><span class="line">import org.junit.runner.RunWith;</span><br><span class="line">import org.springframework.test.context.ContextConfiguration;</span><br><span class="line">import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;</span><br><span class="line"></span><br><span class="line">import com.sysker.spring.dome.service.AccountService;</span><br><span class="line"></span><br><span class="line">@RunWith(SpringJUnit4ClassRunner.class)</span><br><span class="line">@ContextConfiguration(locations = &#123;&quot;classpath:spring-mybatis.xml&quot;&#125;)</span><br><span class="line">public class TestMybatis &#123;</span><br><span class="line">    private static Logger logger = Logger.getLogger(TestMybatis.class);</span><br><span class="line">    @Resource</span><br><span class="line">    private AccountService accountService = null;</span><br><span class="line">    </span><br><span class="line">    @Test</span><br><span class="line">    public void test1() &#123;</span><br><span class="line">        accountService.transfer(&quot;aaa&quot;, &quot;bbb&quot;, &quot;200&quot;);</span><br><span class="line">        logger.info(&quot;success&quot;);</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>缺点：</strong> 在开发中需要修改过java代码，在实际开发中不会用到</li>
+</ul>
+<h4 id="3-2、声明式事务事务管理"><a href="#3-2、声明式事务事务管理" class="headerlink" title="3.2、声明式事务事务管理"></a>3.2、声明式事务事务管理</h4><ul>
+<li>使用XML配置声明式事务（原始方式）（很少用到）</li>
+<li><ul>
+<li>使用TransactionProxyFactoryBean<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 配置事务管理器 --&gt;</span><br><span class="line">&lt;bean id=&quot;transactionManager&quot;</span><br><span class="line">		class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;</span><br><span class="line">		&lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot; /&gt;</span><br><span class="line">	&lt;/bean&gt;</span><br><span class="line">&lt;!-- 配置业务层的代理 --&gt;</span><br><span class="line"> &lt;bean id=&quot;accountServiceProxy&quot; class=&quot;org.springframework.transaction.interceptor.TransactionProxyFactoryBean&quot; &gt;</span><br><span class="line"> &lt;!-- 配置目标对象 --&gt;</span><br><span class="line">    &lt;property name=&quot;transactionManager&quot; ref=&quot;transactionManager&quot;&gt;&lt;/property&gt;</span><br><span class="line">    &lt;!-- 注入事务管理器 --&gt;</span><br><span class="line">    &lt;property name=&quot;target&quot; ref=&quot;accountService&quot;&gt;&lt;/property&gt;</span><br><span class="line">    &lt;!-- 注入事务属性 --&gt;</span><br><span class="line">    &lt;property name=&quot;transactionAttributes&quot;&gt;</span><br><span class="line">        &lt;props&gt;</span><br><span class="line">        &lt;!-- </span><br><span class="line">        prop的格式:</span><br><span class="line">            PROPAGATION : 事务的传播行为，必须有</span><br><span class="line">            ISOLATION   : 事务的隔离级别</span><br><span class="line">            readOnly    ：只读</span><br><span class="line">            -Exception  :发生哪些异常回滚事务</span><br><span class="line">            +Exception  :发生哪些异常不回滚事务</span><br><span class="line">        </span><br><span class="line">        --&gt;</span><br><span class="line">            &lt;prop key=&quot;*&quot;&gt;PROPAGATION_REQUIRED&lt;/prop&gt;</span><br><span class="line">        &lt;/props&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line"> &lt;/bean&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><ul>
+<li>prop格式：</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>PROPAGATION,ISOLATION,readOnly,-Exception,+Exception</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>传播行为，隔离级别，只读事务，发生这些异常回滚事务，发生这些异常提交事务</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>测试类</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">package com.sysker.spring.dome.test;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">import javax.annotation.Resource;</span><br><span class="line"></span><br><span class="line">import org.apache.log4j.Logger;</span><br><span class="line">import org.junit.Test;</span><br><span class="line">import org.junit.runner.RunWith;</span><br><span class="line">import org.springframework.test.context.ContextConfiguration;</span><br><span class="line">import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;</span><br><span class="line"></span><br><span class="line">import com.sysker.spring.dome.service.AccountService;</span><br><span class="line"></span><br><span class="line">@RunWith(SpringJUnit4ClassRunner.class)</span><br><span class="line">@ContextConfiguration(locations = &#123;&quot;classpath:spring-mybatis.xml&quot;&#125;)</span><br><span class="line">public class TestMybatis &#123;</span><br><span class="line">    private static Logger logger = Logger.getLogger(TestMybatis.class);</span><br><span class="line">    @Resource(name=&quot;accountServiceProxy&quot;)</span><br><span class="line">    private AccountService accountService;</span><br><span class="line">    </span><br><span class="line">    @Test</span><br><span class="line">    public void test1() &#123;</span><br><span class="line">        accountService.transfer(&quot;aaa&quot;, &quot;bbb&quot;, &quot;200&quot;);</span><br><span class="line">        logger.info(&quot;success&quot;);</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">``` </span><br><span class="line">service实现，包含了事务管理</span><br></pre></td></tr></table></figure>
+<p>package com.sysker.spring.dome.service.impl;</p>
+<p>import org.springframework.beans.factory.annotation.Autowired;<br>import org.springframework.stereotype.Service;<br>import org.springframework.transaction.TransactionStatus;<br>import org.springframework.transaction.support.TransactionCallbackWithoutResult;<br>import org.springframework.transaction.support.TransactionTemplate;</p>
+<p>import com.sysker.spring.dome.dao.AccountDao;<br>import com.sysker.spring.dome.service.AccountService;</p>
+<p>@Service<br>public class AccountServiceImpl implements AccountService {</p>
+<pre><code>@Autowired
+private AccountDao accountDao;
+
+
+@Override
+public void transfer(String out, String in, String money) {
+            accountDao.outMoney(out, money);
+            int i = 1/0;
+            accountDao.inMoney(in, money);
+
+
+
+}
+</code></pre><p>}</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">-  基于AOP的事务管理（实际开发会经常用到）</span><br></pre></td></tr></table></figure>
+<!-- (事务管理)transaction manager, use JtaTransactionManager for global tx -->
+<pre><code>&lt;bean id=&quot;transactionManager&quot;
+    class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;
+    &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot; /&gt;
+&lt;/bean&gt;
+
+&lt;!-- 基于aop的事务管理 --&gt;
+&lt;tx:advice id=&quot;txAdvice&quot;
+    transaction-manager=&quot;transactionManager&quot;&gt;
+    &lt;tx:attributes&gt;
+    &lt;!-- 
+        PROPAGATION : 事务的传播行为，必须有
+        ISOLATION   : 事务的隔离级别
+        readOnly    ：只读
+        rollback-for  :发生哪些异常回滚事务
+        no-rollback-for  :发生哪些异常不回滚事务
+        timeout : 过期信息
+    --&gt;
+        &lt;tx:method name=&quot;transfer&quot; /&gt;
+    &lt;/tx:attributes&gt;
+&lt;/tx:advice&gt;
+</code></pre> <!-- 配置切面 -->
+<pre><code>&lt;aop:config&gt;
+&lt;!-- 配置切点 --&gt;
+    &lt;aop:pointcut id=&quot;fooServiceOperation&quot;
+        expression=&quot;execution(* com.sysker.spring.dome.service.impl.*.*(..))&quot; /&gt;
+        &lt;!-- 配置切面 --&gt;
+    &lt;aop:advisor advice-ref=&quot;txAdvice&quot;
+        pointcut-ref=&quot;fooServiceOperation&quot; /&gt;
+&lt;/aop:config&gt;
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">service实现，包含了事务管理</span><br></pre></td></tr></table></figure>
+<p>package com.sysker.spring.dome.service.impl;</p>
+<p>import org.springframework.beans.factory.annotation.Autowired;<br>import org.springframework.stereotype.Service;<br>import org.springframework.transaction.TransactionStatus;<br>import org.springframework.transaction.support.TransactionCallbackWithoutResult;<br>import org.springframework.transaction.support.TransactionTemplate;</p>
+<p>import com.sysker.spring.dome.dao.AccountDao;<br>import com.sysker.spring.dome.service.AccountService;</p>
+<p>@Service<br>public class AccountServiceImpl implements AccountService {</p>
+<pre><code>@Autowired
+private AccountDao accountDao;
+
+
+@Override
+public void transfer(String out, String in, String money) {
+            accountDao.outMoney(out, money);
+            int i = 1/0;
+            accountDao.inMoney(in, money);
+
+
+
+}
+</code></pre><p>}</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">测试类</span><br></pre></td></tr></table></figure>
+<p>package com.sysker.spring.dome.test;</p>
+<p>import javax.annotation.Resource;</p>
+<p>import org.apache.log4j.Logger;<br>import org.junit.Test;<br>import org.junit.runner.RunWith;<br>import org.springframework.test.context.ContextConfiguration;<br>import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;</p>
+<p>import com.sysker.spring.dome.service.AccountService;</p>
+<p>@RunWith(SpringJUnit4ClassRunner.class)<br>@ContextConfiguration(locations = {“classpath:spring-mybatis.xml”})<br>public class TestMybatis {<br>    private static Logger logger = Logger.getLogger(TestMybatis.class);<br>    @Resource(name=”accountService)<br>    private AccountService accountService;</p>
+<pre><code>@Test
+public void test1() {
+    accountService.transfer(&quot;aaa&quot;, &quot;bbb&quot;, &quot;200&quot;);
+    logger.info(&quot;success&quot;);
+
+}
+</code></pre><p>}</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- 基于注解的事务管理 （实际开发会经常用到）</span><br></pre></td></tr></table></figure>
+<!-- 配置事务管理器 -->
+<!-- (事务管理)transaction manager, use JtaTransactionManager for global tx -->
+<pre><code>&lt;bean id=&quot;transactionManager&quot;
+    class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;
+    &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot; /&gt;
+&lt;/bean&gt;
+
+!-- 基于注解的事务管理 --&gt;
+&lt;tx:annotation-driven transaction-manager=&quot;transactionManager&quot; /&gt;
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">service实现，包含了事务管理</span><br></pre></td></tr></table></figure>
+<p>package com.sysker.spring.dome.service.impl;</p>
+<p>import org.springframework.beans.factory.annotation.Autowired;<br>import org.springframework.stereotype.Service;<br>import org.springframework.transaction.TransactionStatus;<br>import org.springframework.transaction.support.TransactionCallbackWithoutResult;<br>import org.springframework.transaction.support.TransactionTemplate;</p>
+<p>import com.sysker.spring.dome.dao.AccountDao;<br>import com.sysker.spring.dome.service.AccountService;</p>
+<p>@Service<br>@Transactional<br>public class AccountServiceImpl implements AccountService {</p>
+<pre><code>@Autowired
+private AccountDao accountDao;
+
+
+@Override
+public void transfer(String out, String in, String money) {
+            accountDao.outMoney(out, money);
+            int i = 1/0;
+            accountDao.inMoney(in, money);
+
+
+
+}
+</code></pre><p>}</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">测试类</span><br></pre></td></tr></table></figure>
+<p>package com.sysker.spring.dome.test;</p>
+<p>import javax.annotation.Resource;</p>
+<p>import org.apache.log4j.Logger;<br>import org.junit.Test;<br>import org.junit.runner.RunWith;<br>import org.springframework.test.context.ContextConfiguration;<br>import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;</p>
+<p>import com.sysker.spring.dome.service.AccountService;</p>
+<p>@RunWith(SpringJUnit4ClassRunner.class)<br>@ContextConfiguration(locations = {“classpath:spring-mybatis.xml”})<br>public class TestMybatis {<br>    private static Logger logger = Logger.getLogger(TestMybatis.class);<br>    @Resource(name=”accountService)<br>    private AccountService accountService;</p>
+<pre><code>@Test
+public void test1() {
+    accountService.transfer(&quot;aaa&quot;, &quot;bbb&quot;, &quot;200&quot;);
+    logger.info(&quot;success&quot;);
+
+}
+</code></pre><p>}</p>
+<p><code>`</code> </p>
+</div><div class="tags"><a href="/tags/spring/">spring</a><a href="/tags/事务管理/">事务管理</a></div><div class="post-nav"><a class="next" href="/2018/07/09/spring零配置AOP踩坑指南/">spring零配置AOP踩坑指南</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="http://yoursite.com"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/mybatis/" style="font-size: 15px;">mybatis</a> <a href="/tags/spring/" style="font-size: 15px;">spring</a> <a href="/tags/事务管理/" style="font-size: 15px;">事务管理</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/07/09/spring事务管理/">spring事务管理</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/09/spring零配置AOP踩坑指南/">spring零配置AOP踩坑指南</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/09/mybatis、Spring整合（eclipse）以及事务管理/">mybatis、Spring整合（eclipse）以及事务管理</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://www.cnblogs.com/caoleiCoding/" title="我的博客园" target="_blank">我的博客园</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2018 <a href="/." rel="nofollow">云中志.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.3.5/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.3.5/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
